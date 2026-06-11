@@ -5,7 +5,7 @@ function makeInsight(){
   const top = [...records].sort((a,b)=>b.value-a.value)[0];
   const low = [...records].sort((a,b)=>a.score-b.score)[0];
   const avg = Math.round(records.reduce((s,r)=>s+r.score,0)/records.length);
-  return AI Insight: ${top.name} has the highest value. ${low.name} needs improvement. Overall performance is ${avg}%.;
+  return 'AI Insight': ${top.name} has the highest value. ${low.name} needs improvement. Overall performance is ${avg}%.;
 }
 
 function askAI(){
