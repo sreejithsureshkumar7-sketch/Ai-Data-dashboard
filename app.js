@@ -1,96 +1,59 @@
-let dashboardData = [
-  { month: 'Jan', revenue: 12000, category: 'Students', score: 72 },
-  { month: 'Feb', revenue: 18500, category: 'Sales', score: 81 },
-  { month: 'Mar', revenue: 16000, category: 'Cyber Logs', score: 68 },
-  { month: 'Apr', revenue: 22000, category: 'Students', score: 89 },
-  { month: 'May', revenue: 26000, category: 'Sales', score: 93 },
-  { month: 'Jun', revenue: 31000, category: 'Cyber Logs', score: 86 }
+let records = [
+  {name:'Product A', value:12000, score:82},
+  {name:'Product B', value:18000, score:91},
+  {name:'Product C', value:9000, score:63},
+  {name:'Product D', value:24000, score:96}
 ];
-let lineChart, pieChart, barChart;
+let barChart,lineChart,pieChart;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('dashboardData');
-  if (saved) dashboardData = JSON.parse(saved);
-  renderDashboard();
-  document.getElementById('csvFile').addEventListener('change', importCSV);
-  document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light'));
-});
+document.getElementById('themeBtn')?.addEventListener('click',()=>document.body.classList.toggle('dark'));
+document.getElementById('csvInput')?.addEventListener('change', importCSV);
 
-function saveData(){ localStorage.setItem('dashboardData', JSON.stringify(dashboardData)); }
-
-function renderDashboard(){
-  updateCards(); renderTable(); renderCharts(); generateInsights(); saveData();
+function addData(){
+  const name=document.getElementById('name').value.trim();
+  const value=Number(document.getElementById('value').value);
+  const score=Number(document.getElementById('score').value);
+  if(!name || !value || !score){alert('All fields required');return}
+  records.push({name,value,score});
+  document.getElementById('name').value='';document.getElementById('value').value='';document.getElementById('score').value='';
+  updateDashboard();
+}
+function status(score){return score>=80?'Good':score>=60?'Average':'Risk'}
+function renderTable(){
+  const search=(document.getElementById('search')?.value||'').toLowerCase();
+  const body=document.getElementById('dataBody'); if(!body)return;
+  body.innerHTML='';
+  records.filter(r=>r.name.toLowerCase().includes(search)).forEach(r=>{
+    const cls=r.score>=80?'good':r.score>=60?'warn':'bad';
+    body.innerHTML+=`<tr><td>${r.name}</td><td>₹${r.value}</td><td>${r.score}%</td><td class="${cls}">${status(r.score)}</td></tr>`;
+  });
 }
 function updateCards(){
-  const total = dashboardData.length;
-  const revenue = dashboardData.reduce((s,d)=>s+Number(d.revenue),0);
-  const avg = Math.round(dashboardData.reduce((s,d)=>s+Number(d.score),0) / Math.max(total,1));
-  const growth = total > 1 ? dashboardData[total-1].revenue - dashboardData[total-2].revenue : 0;
-  document.getElementById('totalRecords').innerText = total;
-  document.getElementById('totalRevenue').innerText = '₹' + revenue.toLocaleString('en-IN');
-  document.getElementById('avgScore').innerText = avg + '%';
-  document.getElementById('prediction').innerText = growth >= 0 ? 'Growth +' + growth : 'Drop ' + growth;
+  const total=records.reduce((s,r)=>s+r.value,0);
+  const avg=records.length?Math.round(records.reduce((s,r)=>s+r.score,0)/records.length):0;
+  document.getElementById('totalRecords').textContent=records.length;
+  document.getElementById('totalSales').textContent='₹'+total.toLocaleString('en-IN');
+  document.getElementById('avgScore').textContent=avg+'%';
+  document.getElementById('riskLevel').textContent=avg<60?'High':avg<80?'Medium':'Low';
+  document.getElementById('aiInsight').textContent=makeInsight();
 }
-function renderTable(){
-  document.getElementById('dataTable').innerHTML = dashboardData.map(d => `<tr><td>${d.month}</td><td>₹${Number(d.revenue).toLocaleString('en-IN')}</td><td>${d.category}</td><td>${d.score}%</td></tr>`).join('');
-}
-function renderCharts(){
-  const months = dashboardData.map(d=>d.month);
-  const revenues = dashboardData.map(d=>d.revenue);
-  const scores = dashboardData.map(d=>d.score);
-  const cats = {};
-  dashboardData.forEach(d => cats[d.category] = (cats[d.category] || 0) + 1);
-  if(lineChart) lineChart.destroy(); if(pieChart) pieChart.destroy(); if(barChart) barChart.destroy();
-  lineChart = new Chart(document.getElementById('lineChart'), {type:'line',data:{labels:months,datasets:[{label:'Revenue',data:revenues,tension:.4}]},options:{responsive:true}});
-  pieChart = new Chart(document.getElementById('pieChart'), {type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats)}]},options:{responsive:true}});
-  barChart = new Chart(document.getElementById('barChart'), {type:'bar',data:{labels:months,datasets:[{label:'Score %',data:scores}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
-}
-function generateInsights(){
-  const box = document.getElementById('aiInsights');
-  const revenue = dashboardData.map(d=>Number(d.revenue));
-  const scores = dashboardData.map(d=>Number(d.score));
-  const last = revenue.at(-1) || 0;
-  const prev = revenue.at(-2) || 0;
-  const avgScore = Math.round(scores.reduce((a,b)=>a+b,0)/Math.max(scores.length,1));
-  const best = dashboardData.reduce((a,b)=>Number(a.revenue)>Number(b.revenue)?a:b, dashboardData[0]);
-  let insights = [];
-  insights.push(last >= prev ? `Revenue is increasing. Latest month improved by ₹${(last-prev).toLocaleString('en-IN')}.` : `Revenue decreased by ₹${(prev-last).toLocaleString('en-IN')}. Check weak category performance.`);
-  insights.push(`Average performance score is ${avgScore}%. ${avgScore >= 80 ? 'Overall performance is strong.' : 'Need improvement in low-score months.'}`);
-  insights.push(`Best revenue month is ${best.month} with ₹${Number(best.revenue).toLocaleString('en-IN')}.`);
-  insights.push(`AI forecast: next month expected revenue around ₹${Math.round(last * 1.12).toLocaleString('en-IN')} if current trend continues.`);
-  box.innerHTML = insights.map(i=>`<div class="insight">${i}</div>`).join('');
+function drawCharts(){
+  const labels=records.map(r=>r.name), values=records.map(r=>r.value), scores=records.map(r=>r.score);
+  [barChart,lineChart,pieChart].forEach(c=>c&&c.destroy());
+  barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels,datasets:[{label:'Value',data:values}]},options:{responsive:true,maintainAspectRatio:false}});
+  lineChart=new Chart(document.getElementById('lineChart'),{type:'line',data:{labels,datasets:[{label:'Score %',data:scores}]},options:{responsive:true,maintainAspectRatio:false}});
+  pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels,datasets:[{label:'Value Share',data:values}]},options:{responsive:true,maintainAspectRatio:false}});
 }
 function importCSV(e){
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(){
-    const lines = reader.result.trim().split('\n').slice(1);
-    dashboardData = lines.map(line => {
-      const [month,revenue,category,score] = line.split(',');
-      return {month:month.trim(), revenue:Number(revenue), category:category.trim(), score:Number(score)};
-    });
-    renderDashboard();
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const lines=reader.result.split('\n').slice(1);
+    records=[];
+    lines.forEach(line=>{const [name,value,score]=line.split(','); if(name&&value&&score)records.push({name:name.trim(),value:Number(value),score:Number(score)});});
+    updateDashboard();
   };
   reader.readAsText(file);
 }
-function loadSampleData(){
-  dashboardData = [
-    { month: 'Jul', revenue: 34000, category: 'Students', score: 91 },
-    { month: 'Aug', revenue: 28000, category: 'Sales', score: 77 },
-    { month: 'Sep', revenue: 39000, category: 'Cyber Logs', score: 88 },
-    { month: 'Oct', revenue: 42000, category: 'Students', score: 95 }
-  ]; renderDashboard();
-}
-function clearData(){ dashboardData=[]; renderDashboard(); }
-function exportPDF(){
-  const { jsPDF } = window.jspdf; const doc = new jsPDF();
-  doc.setFontSize(18); doc.text('AI Data Analytics Dashboard Report', 14, 18);
-  doc.setFontSize(11); let y=32;
-  dashboardData.forEach((d,i)=>{ doc.text(`${i+1}. ${d.month} | Revenue: Rs.${d.revenue} | Category: ${d.category} | Score: ${d.score}%`,14,y); y+=8; });
-  doc.save('ai-dashboard-report.pdf');
-}
-function exportExcel(){
-  const ws = XLSX.utils.json_to_sheet(dashboardData);
-  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Dashboard Data');
-  XLSX.writeFile(wb, 'ai-dashboard-data.xlsx');
-}
+function updateDashboard(){renderTable();updateCards();drawCharts();}
+updateDashboard();

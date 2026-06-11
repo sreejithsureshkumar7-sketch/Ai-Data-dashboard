@@ -1,7 +1,6 @@
-month,revenue,category,score
-Jan,12000,Students,72
-Feb,18500,Sales,81
-Mar,16000,Cyber Logs,68
-Apr,22000,Students,89
-May,26000,Sales,93
-Jun,31000,Cyber Logs,86
+name,value,score
+Product A,12000,82
+Product B,18000,91
+Product C,9000,63
+Product D,24000,96
+Product E,7000,48

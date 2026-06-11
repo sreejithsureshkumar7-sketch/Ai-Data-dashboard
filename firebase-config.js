@@ -1,15 +1,16 @@
-// Optional Firebase setup
-// 1. Create Firebase project
-// 2. Enable Firestore Database
-// 3. Paste your firebaseConfig here
-// 4. Add Firebase SDK scripts in index.html if you want real database
+// Firebase Optional Setup
+// 1. Go to Firebase Console
+// 2. Create project
+// 3. Add Web App
+// 4. Paste config below
 
 const firebaseConfig = {
-   apiKey: "AIzaSyC58hyVdJsPUQZ9ZTWxfKRhaBvZ9ijPh-s",
-  authDomain: "ai-data-dashboard-12eb0.firebaseapp.com",
-  projectId: "ai-data-dashboard-12eb0",
-  storageBucket: "ai-data-dashboard-12eb0.firebasestorage.app",
-  messagingSenderId: "84116753531",
-  appId: "1:84116753531:web:24b213767b3b5664f626de",
-  measurementId: "G-TC68N228TV"
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID",
+  storageBucket: "PASTE_PROJECT.appspot.com",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId: "PASTE_APP_ID"
 };
+
+// For real Firebase use, add Firebase CDN scripts in HTML and initialize app.

@@ -4,80 +4,79 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Data Analytics Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">AI</div>
-        <div>
-          <h2>DataVision</h2>
-          <p>AI Analytics</p>
-        </div>
+  <aside class="sidebar">
+    <h2>AI Analytics</h2>
+    <a class="active" href="index.html">Dashboard</a>
+    <a href="profile.html">Profile</a>
+    <a href="admin/dashboard.html">Admin</a>
+    <a href="login.html">Login</a>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>AI Data Analytics Dashboard</h1>
+        <p>Level 1 to 6 upgraded project</p>
       </div>
-      <nav>
-        <a class="active" href="#dashboard">Dashboard</a>
-        <a href="#analytics">Analytics</a>
-        <a href="#insights">AI Insights</a>
-        <a href="#data">Data Manager</a>
-      </nav>
-      <button id="themeToggle" class="ghost-btn">🌙 Dark Mode</button>
-    </aside>
+      <button id="themeBtn">Dark / Light</button>
+    </header>
 
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <h1>AI Data Analytics Dashboard</h1>
-          <p>Realtime data visualization + smart prediction system</p>
-        </div>
-        <div class="actions">
-          <button onclick="exportPDF()">Export PDF</button>
-          <button onclick="exportExcel()">Export Excel</button>
-        </div>
-      </header>
+    <section class="cards">
+      <div class="card"><span>Total Records</span><h3 id="totalRecords">0</h3></div>
+      <div class="card"><span>Total Sales</span><h3 id="totalSales">₹0</h3></div>
+      <div class="card"><span>Avg Score</span><h3 id="avgScore">0%</h3></div>
+      <div class="card"><span>AI Risk</span><h3 id="riskLevel">Low</h3></div>
+    </section>
 
-      <section class="cards" id="dashboard">
-        <div class="card"><span>Total Records</span><h3 id="totalRecords">0</h3></div>
-        <div class="card"><span>Total Revenue</span><h3 id="totalRevenue">₹0</h3></div>
-        <div class="card"><span>Average Score</span><h3 id="avgScore">0%</h3></div>
-        <div class="card"><span>AI Prediction</span><h3 id="prediction">Loading...</h3></div>
-      </section>
+    <section class="panel">
+      <h2>Add Data</h2>
+      <div class="form-grid">
+        <input id="name" placeholder="Name / Product" />
+        <input id="value" type="number" placeholder="Value / Sales" />
+        <input id="score" type="number" placeholder="Score %" />
+        <button onclick="addData()">Add</button>
+      </div>
+      <div class="actions">
+        <input type="file" id="csvInput" accept=".csv" />
+        <button onclick="exportPDF()">Export PDF</button>
+        <button onclick="exportExcel()">Export Excel</button>
+        <button onclick="generateAIReport()">AI Report</button>
+      </div>
+    </section>
 
-      <section class="grid" id="analytics">
-        <div class="panel"><h2>Monthly Revenue</h2><canvas id="lineChart"></canvas></div>
-        <div class="panel"><h2>Category Split</h2><canvas id="pieChart"></canvas></div>
-        <div class="panel wide"><h2>Performance Score</h2><canvas id="barChart"></canvas></div>
-      </section>
+    <section class="charts">
+      <div class="chart-card"><canvas id="barChart"></canvas></div>
+      <div class="chart-card"><canvas id="lineChart"></canvas></div>
+      <div class="chart-card"><canvas id="pieChart"></canvas></div>
+    </section>
 
-      <section class="panel insights" id="insights">
-        <h2>🤖 AI Smart Insights</h2>
-        <div id="aiInsights"></div>
-        <button onclick="generateInsights()">Generate AI Insights</button>
-      </section>
+    <section class="panel ai-box">
+      <h2>AI Insights</h2>
+      <p id="aiInsight">Add data or import CSV to generate AI insights.</p>
+      <textarea id="question" placeholder="Ask: Which product is highest?"></textarea>
+      <button onclick="askAI()">Ask AI</button>
+      <p id="aiAnswer"></p>
+    </section>
 
-      <section class="panel" id="data">
-        <h2>Data Manager</h2>
-        <p>CSV format: month,revenue,category,score</p>
-        <div class="data-actions">
-          <input type="file" id="csvFile" accept=".csv" />
-          <button onclick="loadSampleData()">Load Sample Data</button>
-          <button onclick="clearData()" class="danger">Clear Data</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Month</th><th>Revenue</th><th>Category</th><th>Score</th></tr></thead>
-            <tbody id="dataTable"></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-  </div>
+    <section class="panel">
+      <h2>Data Table</h2>
+      <input id="search" placeholder="Search data..." oninput="renderTable()" />
+      <table>
+        <thead><tr><th>Name</th><th>Value</th><th>Score</th><th>Status</th></tr></thead>
+        <tbody id="dataBody"></tbody>
+      </table>
+    </section>
+  </main>
 
   <script src="js/firebase-config.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/export.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

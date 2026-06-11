@@ -1,24 +1,30 @@
-# AI Data Analytics Dashboard
+# AI Data Analytics Dashboard Ultimate
 
-Complete frontend dashboard project using HTML, CSS and JavaScript.
-
-## Features
-- Responsive dashboard UI
-- Chart.js line, bar and pie charts
-- AI smart insight simulation
-- CSV import
-- PDF export
-- Excel export
-- LocalStorage data saving
-- Dark/light mode
-- Firebase config placeholder
+## Features Level 1 to 6
+- Dashboard Home
+- Charts: Bar, Line, Pie
+- Dark Mode
+- Responsive Design
+- CSV Import
+- Firebase-ready config
+- Login/Register/Profile
+- AI Insights
+- Trend Analysis
+- Simple Prediction Logic
+- PDF Export
+- Excel Export
+- Search and Data Filter
+- Admin Dashboard
+- User Management Demo
+- Activity/Analytics Pages
+- Gemini/OpenAI API placeholder
 
 ## Run
-Open `index.html` directly in Chrome.
+Open `index.html` in Chrome.
 
-## CSV Format
-month,revenue,category,score
+## Firebase
+Open `js/firebase-config.js` and paste Firebase Web App config.
+Enable Firestore Database in Firebase Console.
 
-## Firebase Upgrade
-Open `js/firebase-config.js` and paste your Firebase config.
-Then connect Firestore code in `app.js`.
+## GitHub Upload
+Upload all files/folders to GitHub repository, then enable GitHub Pages from Settings > Pages.
