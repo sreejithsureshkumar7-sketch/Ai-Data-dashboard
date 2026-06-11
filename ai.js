@@ -18,4 +18,4 @@ async function generateAIReport(){
   alert(makeInsight() + '\n\nGemini/OpenAI real API can be connected in js/ai.js.');
 }
 // Gemini API placeholder:
-// const GEMINI_API_KEY = 'PASTE_YOUR_KEY_HERE';
+const GEMINI_API_KEY = 
