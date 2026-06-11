@@ -14,8 +14,34 @@ function askAI(){
   else ans += makeInsight();
   document.getElementById('aiAnswer').textContent=ans;
 }
-async function generateAIReport(){
-  alert(makeInsight() + '\n\nGemini/OpenAI real API can be connected in js/ai.js.');
+async function generateAIReport() {
+
+  const summary = makeInsight();
+
+  const response = await fetch(
+    https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY},
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: "Analyze this dashboard data: " + summary
+          }]
+        }]
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  alert(
+    data.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "No AI response"
+  );
 }
+
 // Gemini API placeholder:
-const GEMINI_API_KEY = 
+const GEMINI_API_KEY = prompt("Enter Gemini API Key"); 
